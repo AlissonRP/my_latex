@@ -1,0 +1,386 @@
+%%Modelo criado por Régis (c) 2011
+%% http://latexbr.blogspot.com
+%% twitter: @rg3915
+\documentclass{sciposter}
+\usepackage{preposter} %pacote com o preambulo.
+%\usepackage[final]{graphics}
+\usepackage{wrapfig,times}
+%\usepackage[ansinew]{inputenc}
+%\usepackage{amsmath}
+%\usepackage{amsthm,amsfonts}
+%\usepackage{amssymb,latexsym}
+%\usepackage{natbib}
+\usepackage{slashbox}
+\usepackage{multicol}
+\usepackage{multirow}
+\usepackage{booktabs}
+
+\definecolor{mainCol}{rgb}{1,1,1}
+%\definecolor{BoxCol}{rgb}{0.13,0.67,0.29} % verde
+\definecolor{BoxCol}{rgb}{0.105,0.390,0.605} % azul
+\definecolor{TextCol}{rgb}{1,1,1}
+\definecolor{SectionCol}{rgb}{0,0,0}
+
+\usepackage[T1]{fontenc}
+%\usepackage{Times}
+
+\newcommand{\Z}{\mathbb Z} % conjunto dos números inteiros
+\newcommand{\F}{\mathbb F} % sigma-algebra
+
+%\newcommand{\tablesize}{\fontsize{9}{11}\selectfont} % tamanho tabela
+
+\allowdisplaybreaks[4] % para evitar espaços entre fórmulas
+
+\renewcommand{\titlesize}{\Huge}
+
+
+%%comandos exclusivos deste poster.
+%\hypersetup{pdfpagelayout=SinglePage} %abre a pagina em modo simples
+\geometry{paperwidth=90cm,paperheight=125cm,centering,
+    textwidth=80cm,textheight=120cm,left=2.2cm,top=1.5cm}
+%********************************************************************
+\begin{document}
+
+%%titulo
+\colorbox{BoxCol}{
+  \begin{minipage}{\textwidth}
+    \color{white}{
+      \begin{center}
+        \Huge{\textbf{\vspace{0.2cm} \\
+        Correções \textit{bootstrap} de testes de hipóteses no modelo de regressão beta inflacionado
+        \vspace{0.7cm} \\}}
+      \end{center}
+    }
+  \end{minipage}
+}
+\title{} % n\~ao delete
+\author{%\hspace{3.5cm}
+\textbf{Laís Helen Loose$^1$ \& Fábio Mariano Bayer$^2$} 
+} %%<-- seu nome
+\institute{%\hspace{3.5cm}
+%\vspace{-0.4cm}
+$^1$PPGMAE, UFRN - \texttt{laisloose@gmail.com}\\
+$^2$Departamento de Estatística, LACESM, UFSM - \texttt{bayer@ufsm.br}}
+\vspace{-0.1cm}
+%\rightlogo[1.2]{abe}\hspace{25cm} %logotipo da abe
+\rightlogo[0.9]{brasao_cores}%\hspace{25cm} %logotipo da abe
+\leftlogo[0.7]{ufrn} %logotipo da ufsm
+
+\maketitle %gera titulo
+
+\vspace{-2.7cm}
+\section*{\hspace{2cm}\vspace{0.0cm}\tituloA{14ª Escola de Modelos de Regressão - 2 a 5 de março de 2015}}
+%Texto em 2 colunas
+\begin{multicols}{3}{
+
+%Paragrafo.
+\setlength{\parindent}{0.5em}
+
+\section*{\tituloA{Introdu\c{c}\~ao}}
+\vspace{0.2cm}
+
+O modelo de regressão beta inflacionado foi introduzido por \cite{Ospina2012} como uma extensão/generalização do modelo de regressão beta \cite{Ferrari2004}. Ele é útil para modelagem de dados no intervalo $[0,1]$, $(0,1]$ e $[0,1)$, como taxas, proporções ou índices. 
+
+No modelo de regressão beta inflacionado 
+modela-se os parâmetros de média, 
+de precisão e de mistura de distribuições, 
+respectivamente, $\mu_t$, $\phi_t$ e $\alpha_t$. 
+Cada um desses parâmetros são assumidos variáveis ao longo das observações e modelados através de estruturas de regressão, 
+que envolvem funções de ligação, covariáveis e parâmetros de regressão desconhecidos.
+
+A estimação dos parâmetros do modelo de regressão beta inflacionado é baseada nos estimadores de máxima verossimilhança (EMV). Outro aspecto importante na modelagem de dados são os testes de hipóteses sobre os parâmetros do modelo, frequentemente realizados com base nas estatísticas da razão de verossimilhanças, Wald, escore ou gradiente, respectivamente, $RV$, $W$, $S$ e $G$. Estes testes são aproximados e caracterizam-se pelo uso de valores críticos obtidos de uma distribuição nula limite conhecida, uma qui-quadrado com $q$ graus de liberdade, $\chi^2_q$, onde $q$ é o número de restrições impostas sob a hipótese nula. 
+Contudo, essas aproximações podem ser pobres em pequenas amostras, 
+acarretando em consideráveis distorções da probabilidade do erro tipo um (tamanho) dos testes. 
+
+
+Neste sentido, a fim de melhorar as inferências no modelo de regressão beta inflacionado propomos correções \textit{bootstrap} para as estatísticas $RV$, $W$, $S$ e $G$. 
+Desta forma, generalizamos o trabalho de \cite{Queiroz2014} 
+em dois sentidos: 
+(i) consideramos um modelo mais amplo, que acomoda a modelagem de zeros ou uns 
+e 
+(ii) propomos o uso da estatística gradiente, assim como sua versão \textit{bootstrap} corrigida. 
+
+\section*{\tituloA{O modelo de regressão beta inflacionado}}
+\vspace{0.2cm}
+
+No modelo de regressão beta proposto por \cite{Ferrari2004} temos uma repa\-ra\-me\-tri\-zação
+da densidade beta, em termos dos parâmetros de média $\mu$ e de precisão $\phi$. 
+A densidade beta é dada da seguinte forma:
+\begin{align}\label{E:densidadeBeta} 
+f(y;\mu,\phi)=\
+\frac{\Gamma(\phi)}{\Gamma(\mu \phi)\Gamma((1-\mu)\phi)}y^{\mu\phi-1}(1-y)^{(1-\mu)\phi-1},
+\end{align}
+em que $0<y<1$, $0 < \mu < 1$,  $\phi>0$ e $\Gamma(\cdot)$ é a função gama. 
+A esperança e a variância de $Y$, são dadas, respectivamente, por: ${\rm{E}}(Y) =\mu,$ e ${\rm{Var}}(Y) = \mu(1-\mu)/(1+\phi)$. 
+
+No modelo de regressão beta inflacionado é assumida uma distribuição para a variável dependente em que a densidade envolve três parâmetros. 
+Sejam $Y_1, \ldots , Y_n$ variáveis aleatórias independentes, em que cada $Y_t$, $t = 1, \ldots, n$, tem distribuição beta inflacionada no ponto $c$ ($c=0$ ou $c=1$), sendo a densidade dada por \cite{Ospina2010, Pereira2012}:
+%\vspace{-0.2cm}
+%{\small
+\begin{align}\label{E:densidadeinflacionada}
+\nonumber bi_c (y_t; \alpha_t, \mu_t, \phi_t) = \lbrace \alpha_t^{\mathbf{l}_{\lbrace c \rbrace} (y_t) } (1- \alpha_t )^{1-{\mathbf{l}_ {\lbrace c \rbrace} (y_t)}} \rbrace \lbrace
+ f(y_t; \mu_t, \phi_t) ^{1-\mathbf{l}_{ \lbrace c \rbrace } (y_t) }\rbrace,
+\end{align}
+%}
+em que $\mathbf{l}_{\lbrace c \rbrace} (y_t)$  é uma função indicadora que assume valor $1$ se $y_t = c$ e $0$ caso contrário,
+$0 < \alpha_t < 1$ é o parâmetro de mistura da distribuição dado por $\alpha_t = {\rm{Pr}}(y_t = c)$, ($c=0$ ou $c=1$), 
+$0<\mu_t < 1$
+é a média de $y_t$ condicionada a $y_t \in (0, 1)$, $\phi_t > 0$ é o parâmetro de precisão e $ f(y_t; \mu_t, \phi_t)$ é a
+função densidade de probabilidade dada na Equação~\eqref{E:densidadeBeta}. A esperança e a variância de $Y$ são dadas por: ${\rm E}(Y) = \, \alpha_tc+(1-\alpha_t) \mu_t$ e ${\rm{Var}}(Y) = \, (1-\alpha_t)\mu_t(1-\mu_t)/(\phi_t +1)+ \alpha_t(1-\alpha_t)(c-\mu_t)^2$~\cite{Ospina2012}.
+
+Para o modelo de regressão beta inflacionado em zero ou um com dispersão variável, temos as seguintes relações~\cite{Ospina2012, Pereira2012}:
+%\vspace{-0.2cm}
+%{\small
+\begin{align*}
+g(\mu_t) & = \, \sum_{i=1}^m x_{it}\beta_i=\eta_t, \\ 
+b(\phi_t) & =  \, \sum_{i=1}^p s_{it}\lambda_i=\kappa_t, \\
+h(\alpha_t) & = \, \sum_{i=1}^M z_{it}\gamma_i=\zeta_t,
+\end{align*}
+%}
+com $t=1,\ldots, n$, em que $\beta=(\beta_1, \ldots , \beta_m)^\top$, $\lambda=(\lambda_1, \ldots , \lambda_p)^\top$ e $\gamma=(\gamma_1, \ldots , \gamma_M)^\top$ são os vetores de parâmetros desconhecidos, onde $\beta \in \mathbb{R}^m$, $\lambda \in \mathbb{R}^p$ e $\gamma \in \mathbb{R}^M$; $x_{1t}, \ldots , x_{mt}$, $s_{1t}, \ldots , s_{pt}$ e $z_{1t}, \ldots , z_{Mt}$ representam as variáveis explicativas assumidas fixas e conhecidas; $m+p+M<n$; $g(\cdot)$, $b(\cdot)$ e $h(\cdot)$ são as funções de ligação estritamente monótonas e duas vezes diferenciáveis, tais que $g: (0,1) \rightarrow \mathbb{R}$, $b: (0,\infty) \rightarrow \mathbb{R}$ e $h: (0,1) \rightarrow \mathbb{R}$. %\citep{Pereira2012}. 
+
+Diferentes funções de ligação podem ser utilizadas, entre elas: a logit, a probit, a complemento log-log, a log-log e a Cauchy, 
+tanto para $\mu$ quanto para $\alpha$. 
+Para a estrutura do $\phi$ temos a função logarítmica e a raiz quadrada. 
+
+Os estimadores de máxima verossimilhança do vetor paramétrico $\theta= ( \beta^{\top}, \lambda^{\top}, \gamma^{\top})^{\top}$ são obtidos pela maximização do logaritmo da função de verossimilhança. 
+
+
+O modelo de regressão beta inflacionado faz parte da classe dos modelos GAMLSS. Assim, os ajustes considerados neste trabalho são feitos utilizando o pacote {\tt gamlss}~\cite{Stasinopoulos2007} 
+disponível no ambiente {\tt R}~\cite{R2014}. 
+ 
+ 
+ 
+\section*{\tituloA{Estatísticas de teste e correções \textit{bootstrap}}}
+\vspace{0.2cm}
+
+Sejam $Y_1, \ldots , Y_n$ variáveis aleatórias independentes, $\theta = (\beta^{\top}, \lambda^{\top}, \gamma^{\top})^{\top}$ o vetor de parâmetros desconhecidos que indexam o modelo de regressão beta inflacionado em zero ou um. Considere o vetor de parâmetros 
+$\theta=(\nu^{\top}, \tau^{\top})^{\top}$, em que o interesse está em testar a hipótese nula 
+$$\mathcal{H}_0: \nu = \nu_0,$$ 
+onde $\nu_0$ é um vetor de constantes especificado de dimensão $q$. 
+Para realização desse teste de hipótese pode-se utilizar uma das quatro estatísticas de testes mencionadas, definidas a seguir.
+
+A estatística da razão de verossimilhanças é dada por:
+%\vspace{-0.3cm}
+%{\small
+\begin{align*}
+RV=2 \left[ \ell(\widehat{\theta})-\ell(\widetilde{\theta}) \right],
+\end{align*}
+%}
+em que $\ell(\theta)$ é a função de log-verossimilhança 
+avaliada em $\theta=(\nu^{\top}, \tau^{\top})^{\top}$, 
+$\widehat{\theta}=(\widehat{\nu}^{\top}, \widehat{\tau}^{\top})^{\top}$ é o EMV irrestrito de $\theta$ 
+e 
+$\widetilde{\theta}=({\nu_0}^{\top}, \widetilde{\tau}^{\top})^{\top}$  é o EMV restrito de $\theta$ (sob hipótese nula). 
+
+Para o teste de Wald temos a estatística dada por:
+%\vspace{-0.2cm}
+%{\small
+\begin{align*}
+W=(\widehat{\theta}-\widetilde{\theta})^{\top}I_F(\widehat{\theta})(\widehat{\theta}-\widetilde{\theta}),
+\end{align*}
+%}
+em que $I_F(\widehat{\theta})$ corresponde a matriz de informação de Fisher avaliada em $\widehat{\theta}$.
+
+A estatística escore é dada por:
+%\vspace{-0.2cm}
+%{\small
+\begin{align*}
+S= \left[ U(\widetilde{\theta}) \right]^{\top} \left[ I_F(\widetilde{\theta}) \right]^{-1} U(\widetilde{\theta}),
+\end{align*}
+%}
+em que $U(\theta)$ %=(U_{\gamma}(\gamma)^{\top}, U_{\beta}(\beta, \lambda)^{\top}, U_{\lambda}(\beta, \lambda)^{\top} )^{\top}$ 
+é o vetor escore.
+
+A estatística gradiente, é dada por:
+%\vspace{-0.2cm}
+%{\small
+\begin{align*}
+G= \left[ U(\widetilde{\theta}) \right]^{\top} (\widehat{\theta}-\widetilde{\theta}).
+\end{align*}
+%}
+
+O objetivo das correções \textit{bootstrap} é obter diretamente da amostra observada uma estimativa da distribuição exata da estatística de teste. Conforme \cite{Queiroz2014} o esquema \textit{bootstrap} geral para obtenção de testes mais acurados pode ser descrito pelos seguintes passos:
+\begin{enumerate}
+\item Calcular a estatística de teste de interesse, $\tau$.
+
+\item Construir a amostra de \textit{bootstrap} $Y^*$, em que $Y^*_t$ tem distribuição beta inflacionada, com parâmetros $\widetilde{\mu_t}$, $\widetilde{\phi_t}$ e $\widetilde{\alpha_t}$, onde $\widetilde{\mu}_t=g^{-1}(x_t^{\top}\widetilde{\beta})$, $\widetilde{\phi}_t=b^{-1}(s_t^{\top}\widetilde{\lambda})$ e $\widetilde{\alpha}_t=h^{-1}(z_t^{\top}\widetilde{\gamma})$. $\widetilde{\beta}$, $\widetilde{\lambda}$ e $\widetilde{\gamma}$ são os vetores de estimativas de máxima verossimilhança sob hipótese nula.
+
+\item Estimar o modelo usando $Y_t^*$ como variável resposta, para obter os estimadores de máxima verossimilhança irrestritos e restritos de \textit{bootstrap} e calcular a estatística $\tau^*$.
+
+\item Repetir os passos dos itens $2$ e $3$ um número $B$ grande de vezes.
+
+\item Calcular o quantil de interesse $1-\alpha_*$ da distribuição empírica das $B$ realizações da estatística $\tau^*$ obtidas usando os passos dos itens $2$ até $4$.
+
+\item Realizar o teste utilizando a estatística $\tau$ calculada no item $1$ junto com o valor crítico
+de \textit{bootstrap} obtido no item $5$.
+\end{enumerate}
+
+A região de rejeição é definida com base no quantil $1-\alpha_*$,  sendo a hipótese nula, $\mathcal{H}_0$, rejeitada quando a estatística é maior que o quantil estimado, ou seja, $\tau > 1-\alpha_*$.
+
+\section*{\tituloA{Metodologia}}
+\vspace{0.2cm}
+A avaliação de desempenho das estatísticas de teste usuais e de suas versões corrigidas por \textit{bootstrap},
+foi realizada via simulações de Monte Carlo. 
+Os tamanhos amostrais considerados foram $n=30, 40, 50$; 
+o número de réplicas de Monte Carlo foi fixado em $5.000$ e para as correções \textit{bootstrap} foram consideradas $B = 1.000$ reamostras. 
+Os níveis nominais considerados foram de $1\%$, $5\%$ e $10\%$. 
+Os regressores foram gerados da distribuição uniforme padrão, $\mathcal{U}(0,1)$, e considerados constantes durante todas as réplicas de Monte Carlo. 
+Para cada réplica gera-se uma amostra $Y_1  ,\ldots, Y_n$ com densidade beta inflacionada em um.
+Toda a implementação computacional foi desenvolvida na linguagem {\tt R}. 
+% e a estimação dos parâmetros do modelo foi realizada considerando a função {\tt gamlss}  \citep{rigby2005}.
+
+
+Para a avaliação dos testes de hipóteses sobre os parâmetros do submodelo da média temos as seguintes estruturas:
+\begin{align*}
+g(\mu_t)&=\beta_0+\beta_1 x_{1t}+\beta_2 x_{2t},\\
+b(\phi_t)&=\lambda_0+\lambda_1 s_{1t},\\
+h(\alpha_t)&=\gamma_0+\gamma_1 z_{1t},
+\end{align*}
+em que $t=1,\ldots,n$. Para a estrutura de regressão da média, $g(\mu_t)$, e de mistura, $h(\alpha_t)$, foi utilizada a função de ligação logit e para a estrutura do parâmetro de precisão, $b(\phi_t)$, a função de ligação logarítmica.
+Foram considerados dois cenários para a hipótese nula: \\
+(i) $q=1$, em que $\mathcal{H}_0: \beta_2=0$, fixados os parâmetros $\beta_0=-1$, $\beta_1=3,5$, $\beta_2=0$, $\lambda_0=5,1$, $\lambda_1=-2,8$, $\gamma_0=-2$, $\gamma_1=1,5$; \\
+(ii) $q=2$, $\mathcal{H}_0:\beta_1= \beta_2=0$, onde $\beta_0=2$, $\beta_1=\beta_2=0$.  
+
+
+Para testes sobre o submodelo de $\alpha$, 
+consideramos as seguintes estruturas: 
+\begin{align*}
+g(\mu_t)&=\beta_0+\beta_1 x_{1t},\\
+b(\phi_t)&=\lambda_0+\lambda_1 s_{1t},\\
+h(\alpha_t)&=\gamma_0+\gamma_1 z_{1t}+\gamma_2 z_{2t}.
+\end{align*}
+Neste caso temos: \\
+(i) $q=1$, $\mathcal{H}_0: \gamma_2=0$, fixando os parâmetros $\beta_0=-1$, $\beta_1=3,5$, $\lambda_0=5,1$, $\lambda_1=-2,8$, $\gamma_0=-2$, $\gamma_1=1,5$; \\
+(ii) $q=2$, $\mathcal{H}_0:\gamma_1= \gamma_2=0$, considerando $\gamma_0=-2$.
+
+Sendo que estes valores para $\gamma$ acarretam em probabilidade em torno de $0,25$ (i) e $0,11$ (ii), da amostra conter valores uns.
+
+\section*{\tituloA{Resultados}}
+\vspace{0.2cm}
+
+\textbf{Tabela 1.} Taxas de rejeição nula $(\%)$ para os submodelos de $\mu$ e de $\alpha$
+
+\begin{table}
+\centering
+%\caption{Taxas de rejeição nula $(\%)$, para o submodelo de $\mu$ e $\alpha$.}
+\label{T:tamanho}
+
+\begin{tabular}{llrrrrrrrrr}
+\hline
+& $n$ & \multicolumn{3}{c}{$30$} & \multicolumn{3}{c}{$40$}&\multicolumn{3}{c}{$50$}  \\
+ \cmidrule(r){3-5}  
+ \cmidrule(r){6-8}  
+ \cmidrule{9-11}
+  \vspace{-0.3cm}
+  \\
+$q$ & & $1\%$ & $5\%$ & $10\%$ & $1\%$ & $5\%$ & $10\%$ &  $1\%$ & $5\%$ & $10\%$\\
+\hline
+\multicolumn{10}{c}{Submodelo de $\mu$}\\
+\hline
+1 & $RV$ &	$3,76$ & $10,30$ & $17,82$ & $2,00$ & $7,96$ & $14,24$ & $1,88$ & $6,76$ & $13,32$ \\	 
+& $W$ & $12,32$ & $21,06$ & $28,32$ &$6,48$ & $13,76$ & $20,86$ & $4,24$ & $11,70$ & $18,06$ \\ 
+& $S$ & $0,96$ & $\textbf{5,84}$ & $\textbf{12,02}$ & $0,84$ & $\textbf{4,82}$ & $\textbf{10,96}$ & $\textbf{1,04}$ & $\textbf{5,16}$ & $\textbf{10,92}$ \\ 
+\vspace{0,125cm}
+& $G$ & $\textbf{1,00}$ & $7,18$ & $14,82$ & $\textbf{0,86}$ & $5,78$ & $12,34$ &	 $1,26$ & $5,78$ & $12,28$ \\ 
+& $RV_{B}$	&  $1,20$ & $\textbf{5,08}$ & $9,64$ & $0,90$ & $4,34$ & $\textbf{9,14}$ & 	$\textbf{1,02}$ & $4,70$ & $\textbf{10,20}$ \\ 
+& $W_{B}$ & $\textbf{0,92}$ & $4,70$ & $9,38$ & $0,86$ & $\textbf{4,52}$ & $9,22$ & $0,86$ & $4,56$ & $9,44$ \\ 
+& $S_{B}$ &	$1,26$ & $5,36$ & $10,46$ &	 $0,96$ & $4,32$ & $9,40$ &	 $1,12$ & $\textbf{4,90}$ & $10,26$ \\ 
+& $G_{B}$ & $1,30$ & $5,42$ & $\textbf{9,76}$ & $\textbf{0,98}$ & $4,24$ & $9,48$ &	$1,14$ & $4,68$ & $\textbf{10,20}$ \\ 
+%& $RV_{Sk1}$ &	  $1,52$ & $5,96$ & $10,70$ & $1,18$ & $\textbf{4,70}$ & $\textbf{9,90}$ & $1,36$ & $\textbf{4,94}$ & $10,48$ \\ 
+%& $RV_{Sk2}$ & $\textbf{1,08}$ & $5,20$ & $9,58$ & $ 0,86$ & $4,08$ & $9,30$ & $\textbf{1,00}$ & $4,54$ & $\textbf{9,94}$ \\ 
+\hline
+2 & $RV$ &	$2,98$ & $10,74$ & $18,28$ &	$2,52$ & $8,96$ & $15,36$ & $1,74$ & $7,34$ & $13,46$ \\ 		
+& $W$ &	  $14,94$ & $24,86$ & $32,10$ & $8,64$ & $17,14$ & $24,00$ &	$5,94$ & $14,08$ & $21,22$ \\ 
+& $S$ &	  $\textbf{0,54}$ & $4,26$ & $\textbf{10,56}$ & $0,74$ & $\textbf{5,56}$ & $\textbf{10,88}$ &  $0,74$ & $\textbf{4,66}$ & $\textbf{9,60}$ \\ 
+\vspace{0,125cm}
+& $G$ & $0,46$ & $\textbf{5,14}$ & $12,46$ & $\textbf{0,90}$ & $6,36$ & $12,38$ 	& $\textbf{0,84}$ & $5,50$ & $11,26$ \\ 
+& $RV_{B}$& $0,86$ & $4,54$ & $9,48$ & $1,20$ & $5,56$ & $10,68$ & $0,84$ & $4,76$ & $9,76$ \\ 
+& $W_{B}$ &	$0,62$ & $4,34$ & $8,78$ & $\textbf{0,86}$ & $\textbf{5,08}$ & $\textbf{10,32}$ & $\textbf{1,00}$ & $4,70$ & $\textbf{9,92}$ \\ 
+& $S_{B}$ &	$1,06$ & $4,72$ & $10,16$ & $1,34$ & $5,98$ & $10,82$ & $1,02$ & $4,82$ & $9,36$ \\ 
+
+& $G_{B}$ & $\textbf{1,04}$ & $\textbf{4,74}$ & $\textbf{10,02}$ & $1,20$ & $5,78$ & $10,80$ & $0,98$ & $\textbf{4,98}$ & $9,76$ \\ 
+%& $RV_{Sk1}$ &	$1,32$ & $6,38$ & $12,02$ & $1,52$ & $6,70$ & $11,76$ & $1,14$ & $5,40$ & $10,80$ \\ 
+
+%& $RV_{Sk2}$ & $1,20$ & $6,04$ & $11,68$ & $1,46$ & $6,60$ & $11,62$ & $1,10$ & $5,38$ & $10,66$ \\ 
+
+\hline
+\multicolumn{10}{c}{Submodelo de $\alpha$}\\
+\hline
+1 & $RV$ & $1,58$ & $6,48$ & $12,34$ &	$1,46$ & $6,74$ & $12,08$ & $1,52$ & $6,24$ & $11,44$\\ 
+& $W$ &	$0,34$ & $4,26$ & $\textbf{10,12}$ & $0,56$ & $\textbf{4,82}$ & $\textbf{10,62}$ & $\textbf{1,16}$ & $5,60$ & $10,84$\\ 
+& $S$ & $\textbf{0,88}$ & $\textbf{5,32}$ & $11,24$ & $\textbf{1,02}$ & $5,84$ & $11,62$ & $0,60$ & $\textbf{4,98}$ & $\textbf{10,32}$ \\ 
+\vspace{0,125cm}
+& $G$ & $2,44$ & $7,44$ & $13,24$ & $2,14$ & $7,48$ & $12,62$ & $1,88$ & $7,02$ & $11,90$\\ 
+& $RV_{B}$ & $\textbf{1,02}$ & $4,46$ & $9,62$ & $1,12$ & $\textbf{5,08}$ & $\textbf{10,16}$ & $1,14$ & $\textbf{5,18}$ & $10,18$\\ 
+& $W_{B}$ &  $1,20$ & $\textbf{5,08}$ & $10,20$ & $1,36$ & $5,34$ & $10,46$ &  $1,26$ & $5,24$ & $10,16$\\ 
+& $S_{B}$ &  $1,06$ & $4,90$ & $\textbf{10,02}$	& $1,28$ & $5,34$ & $10,42$ & $1,26$ & $5,26$ & $10,22$ \\ 
+& $G_{B}$ &  $0,66$ & $3,88$ & $9,18$	& $\textbf{0,98}$ & $4,66$ & $\textbf{9,84}$ & $\textbf{1,08}$ & $5,20$ & $\textbf{10,08}$\\ 
+%& $RV_{Sk1}$ &   0,98 & 4,70 & 10,08 		&	  1,06 & 5,24 & 10,40 & 1.20 & 5.26 & 10.20 \\ 
+%& $RV_{Sk2}$ &   0,86 & 4,54 & 9,78 		&	  0,98 & 5,14 & 10,28 & 1.14 & 5.18 & 10.12 \\ 
+\hline
+2 & $RV$ & $\textbf{1,54}$ & $8,02$ & $13,86$ & $2,16$ & $7,38$ & $13,26$ & $1,92$ & $7,48$ & $13,74$ \\ 
+& $W$ &	$0,00$ & $1,70$ & $7,56$ & $0,06$ & $3,88$ & $9,22$ & $0,44$ & $\textbf{4,90}$ & $\textbf{10,92}$\\ 
+& $S$ &	$0,22$ & $\textbf{3,34}$ & $\textbf{8,86}$ & $\textbf{0,50}$ & $\textbf{4,44}$ & $\textbf{9,44}$ & $\textbf{0,74}$ & $5,28$ & $11,26$ \\ 
+\vspace{0,125cm}
+& $G$ & $6,62$ & $13,86$ & $19,24$ &  $5,52$ & $11,40$ & $17,48$ & $3,88$ & $10,16$ & $16,28$\\ 
+& $RV_{B}$& $\textbf{0,88}$ & $3,40$ & $8,90$ & $1,20$ & $\textbf{4,74}$ & $9,76$ & $1,34$ & $\textbf{5,24}$ & $10,72$ \\ 
+& $W_{B}$ & $0,84$ & $\textbf{5,02}$ & $\textbf{10,50}$ & $1,12$ & $5,30$ & $\textbf{10,42}$ & $\textbf{1,30}$ & $5,58$ & $10,76$\\ 
+& $S_{B}$ &	$0,80$ & $5,10$ & $9,48$ & $\textbf{1,08}$ & $5,74$ & $10,50$ & $1,38$ & $5,92$ & $11,34$\\ 
+& $G_{B}$ & $0,26$ & $2,90$ & $7,80$ &  $0,28$ & $4,44$ & $8,68$ & $0,68$ & $4,56$ & $\textbf{9,64}$\\ 
+
+%& $RV_{Sk1}$ & $1,30$ & $4,32$ & $9,18$ & $0,80$ & $5,10$ & $9,72$ & $1,24$ & 5,56 & 10,96 \\ 
+%& $RV_{Sk2}$ & $0,44$ & $3,18$ & $8,00$ & $0,78$ & $4,82$ & $9,34$ & $1,22$ & 5,50 & 10,82 \\ 
+\hline
+\end{tabular}
+\end{table}
+
+
+
+
+\section*{\tituloA{Conclus\~ao}}
+\vspace{0.2cm}
+
+Os resultados numéricos, em especial para inferências sobre a estrutura da média, indicam que as versões corrigidas das estatísticas de teste as tornam mais acuradas, diminuindo o problema de distorção de tamanho em pequenas amostras. 
+
+Verificou-se ainda que para o submodelo de $\alpha$ as correções também tornam os testes mais precisos. 
+Em trabalhos futuros serão investigados outros cenários, avaliações numéricas de poder dos testes e também aplicações em dados reais.
+
+
+\section*{\tituloA{Agradecimentos}}
+
+Os autores agradecem à FAPERGS, à CAPES e ao CNPq pelo auxílio financeiro.
+
+
+\section*{\tituloA{Refer\^encias}}
+\begingroup
+\renewcommand{\section}[2]{}
+\begin{thebibliography}{99}
+\small
+\bibitem{Ospina2012} Ospina, R. ; Ferrari, S. L. P. (2012). \textbf{A general class of zero-or-one inflated beta regression models}. Computational Statistics \& Data Analysis, 56, 1609-1623.
+
+\bibitem{Ferrari2004} Ferrari, S. L. P.; Cribari-Neto, F. (2004). \textbf {Beta regression for modeling rates and proportions}. Journal of Applied Statistics, 31, 7.
+
+\bibitem{Queiroz2014} Cribari-Neto, F.; Queiroz, M. P.F. (2014). \textbf{On testing inference in beta regressions}. Journal of Statistical Computation and Simulation, 84, (1), 186-203.
+
+\bibitem{Ospina2010} Ospina, R.; Ferrari, S. L. P. (2010). \textbf{Inflated beta distributions}.
+Statistical Papers 51, 111–126.
+
+\bibitem{Pereira2012} Pereira, T. L., Cribari-Neto, F., 2014. \textbf {Modified likelihood ratio statistics for inflated beta regressions}. Journal of Statistical Computation and Simulation 84, 982–998.
+
+\bibitem{Stasinopoulos2007} Stasinopoulos, D. M.; Rigby, R. A. (2007). \textbf{Generalized additive models for location scale and shape (GAMLSS) in R}. Journal of Statistical Software 23 (7).
+
+\bibitem{R2014} R Development Core Team, (2012). \textbf {R: A Language and Environment for Statistical Computing}. R Foundation for Statistical Computing, Vienna, Austria, ISBN 3-900051-07-0.
+
+ 
+\end{thebibliography}
+
+\endgroup
+
+}
+
+
+\end{multicols}
+
+
+\end{document} 

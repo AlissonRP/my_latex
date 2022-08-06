@@ -1,0 +1,34 @@
+\usepackage[brazil]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[centertags]{amsmath}
+\usepackage{hyperref,amsfonts,multirow,multicol}
+\usepackage{graphicx,colortbl}
+\usepackage{lipsum} %sugest\~ao de texto
+\usepackage{geometry}
+\pagestyle{plain}
+\frenchspacing
+\usepackage{tikz}
+
+%%Transformando tudo em branco
+\renewcommand{\thesection}{\textcolor{white}{\arabic{section}}}
+\renewcommand{\thesubsection}{\textcolor{white}{\arabic{section}.\arabic{subsection}}}
+\addto\captionsbrazil{\renewcommand{\bibname}{\textcolor{white}{Refer\^encias}}}
+
+%%Definindo cores
+\definecolor{BoxCol}{RGB}{26,134,58} %azul
+
+%%Define o caminho das figuras, válido somente para o comando \includegraphics
+\graphicspath{{figuras/}}
+%********************************************************************
+%%Teoremas
+\usepackage{theorem}
+\theorembodyfont{\normalfont\upshape}
+\newtheorem{ex}{Exemplo}
+\newenvironment{defn}[1][Defini\c{c}\~ao]{\textbf{#1:}\
+}%
+%********************************************************************
+%%Definindo de novos comandos
+
+\newcommand{\tituloA}[1]{\emph{\textbf{\color{white}{#1}}}}
+\newcommand{\tituloB}[1]{\emph{\textbf{\color{blue}{#1}}}}
+\newcommand{\R}{\mathbb{R}}
